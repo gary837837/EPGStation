@@ -53,6 +53,7 @@ import MpegTsLiveStream from './Service/Stream/MpegTsLiveStream';
 import RecordedHLSStream from './Service/Stream/RecordedHLSStream';
 import RecordedStreamingMpegTsStream from './Service/Stream/RecordedStreamingMpegTsStream';
 import { ContainerType, RecordedStreamingMultiTypeStream } from './Service/Stream/RecordedStreamingMultiTypeStream';
+import RTMPLiveStream from './Service/Stream/RTMPLiveStream';
 import { StreamManageModel } from './Service/Stream/StreamManageModel';
 import WebMLiveStream from './Service/Stream/WebMLiveStream';
 
@@ -160,6 +161,13 @@ namespace ModelFactorySetting {
                 mode,
             ); },
             (chanelId: apid.ServiceItemId, mode: number): MP4LiveStream => { return new MP4LiveStream(
+                encodeProcessManage,
+                socketIoManage,
+                streamManage,
+                chanelId,
+                mode,
+            ); },
+            (chanelId: apid.ServiceItemId, mode: number): RTMPLiveStream => { return new RTMPLiveStream(
                 encodeProcessManage,
                 socketIoManage,
                 streamManage,

@@ -61,6 +61,7 @@ class StreamSelectViewModel extends ViewModel {
             if (typeof config.liveHLS !== 'undefined') { typeCnt += 1; }
             if (typeof config.liveWebM !== 'undefined') { typeCnt += 1; }
             if (typeof config.liveMP4 !== 'undefined') { typeCnt += 1; }
+            if (typeof config.liveRTMP !== 'undefined') { typeCnt += 1; }
             // 複数の配信方式があるか
             this.hasMultiType = typeCnt > 1;
 
@@ -85,6 +86,11 @@ class StreamSelectViewModel extends ViewModel {
                 if (typeof config.liveMP4[selectValue.mode] !== 'undefined') {
                     this.streamOptionValue = selectValue.mode;
                 }
+            } else if (selectValue.type === 'RTMP' && typeof config.liveRTMP !== 'undefined') {
+                this.streamTypeValue = 'RTMP';
+                if (typeof config.liveRTMP[selectValue.mode] !== 'undefined') {
+                    this.streamOptionValue = selectValue.mode;
+                }
             } else {
                 this.streamTypeValue = 'M2TS';
                 if (typeof config.mpegTsStreaming !== 'undefined') {
@@ -95,6 +101,8 @@ class StreamSelectViewModel extends ViewModel {
                     this.streamTypeValue = 'WebM';
                 } else if (typeof config.liveMP4 !== 'undefined') {
                     this.streamTypeValue = 'MP4';
+                } else if (typeof config.liveRTMP !== 'undefined') {
+                    this.streamTypeValue = 'RTMP';
                 }
             }
         }
@@ -131,6 +139,7 @@ class StreamSelectViewModel extends ViewModel {
         if (typeof config.liveHLS !== 'undefined') { types.push('HLS'); }
         if (typeof config.liveWebM !== 'undefined') { types.push('WebM'); }
         if (typeof config.liveMP4 !== 'undefined') { types.push('MP4'); }
+        if (typeof config.liveRTMP !== 'undefined') { types.push('RTMP'); }
 
         return types;
     }
@@ -170,6 +179,10 @@ class StreamSelectViewModel extends ViewModel {
             });
         } else if (this.streamTypeValue === 'MP4' && typeof config.liveMP4 !== 'undefined') {
             return config.liveMP4.map((option, index) => {
+                return { name: option, value: index };
+            });
+        }  else if (this.streamTypeValue === 'RTMP' && typeof config.liveRTMP !== 'undefined') {
+            return config.liveRTMP.map((option, index) => {
                 return { name: option, value: index };
             });
         } else {
@@ -219,6 +232,14 @@ class StreamSelectViewModel extends ViewModel {
 
             // ページ移動
             window.setTimeout(() => { Util.move('/stream/watch', { stream: streamNumber }); }, 200);
+        } else if (this.streamTypeValue === 'RTMP') {
+            // RTMP
+            this.close();
+
+            await this.streamApiModel.startLiveRTMP(
+                this.channel.id,
+                this.streamOptionValue,
+            );
         }
     }
 

@@ -341,6 +341,11 @@ definitions:
         items:
           description: 'MP4 ライブ配信の設定'
           type: string
+      liveRTMP:
+        type: array
+        items:
+          description: 'RTMP ライブ配信の設定'
+          type: string
       kodiHosts:
         type: array
         items:
@@ -1379,6 +1384,14 @@ definitions:
       streamNumber:
         type: integer
 
+  RTMPStream:
+    type: object
+    required:
+      - streamNumber
+    properties:
+      streamNumber:
+        type: integer
+
   StreamInfo:
     type: object
     required:
@@ -1400,6 +1413,7 @@ definitions:
           - HLSLive
           - WebMLive
           - MP4Live
+          - RTMPLive
           - MpegTsRecordedStreaming
           - MultiTypeRecordedStreaming
       channelId:

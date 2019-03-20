@@ -70,6 +70,7 @@ export interface Config {
     };
     liveWebM?: string[];
     liveMP4?: string[];
+    liveRTMP?: string[];
     kodiHosts?: string[];
 }
 
@@ -442,11 +443,15 @@ interface HLSStream {
     streamNumber: number;
 }
 
+interface RTMPStream {
+    streamNumber: number;
+}
+
 interface StreamInfo {
     streamNumber: number;
     isEnable: boolean;
     viewCnt: number;
-    type?: 'MpegTsLive' | 'RecordedHLS' | 'HLSLive' | 'WebMLive' | 'MP4Live' | 'MpegTsRecordedStreaming' | 'MultiTypeRecordedStreaming';
+    type?: 'MpegTsLive' | 'RecordedHLS' | 'HLSLive' | 'WebMLive' | 'MP4Live' | 'RTMPLive' | 'MpegTsRecordedStreaming' | 'MultiTypeRecordedStreaming';
     channelId?: ServiceItemId;
     recordedId?: RecordedId;
     encodedId?: EncodedId;

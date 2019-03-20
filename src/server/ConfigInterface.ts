@@ -160,6 +160,10 @@ interface ConfigInterface {
         name: string;
         cmd: string;
     }[];
+    liveRTMP: {
+        name: string;
+        cmd: string;
+    }[];
     kodiHosts: {
         name: string;
         host: string;

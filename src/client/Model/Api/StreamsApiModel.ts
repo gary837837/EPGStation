@@ -7,6 +7,7 @@ interface StreamsApiModelInterface extends ApiModel {
     getInfos(): apid.StreamInfo[];
     startLiveHLS(channelId: apid.ServiceItemId, mode: number): Promise<number>;
     startRecordedHLS(recordedId: apid.RecordedId, mode: number, encodedId?: apid.EncodedId | null): Promise<number>;
+    startLiveRTMP(channelId: apid.ServiceItemId, mode: number): Promise<number>;
     stop(streamNumber: number): Promise<void>;
     forcedStopAll(): Promise<void>;
 }
@@ -96,6 +97,30 @@ class StreamsApiModel extends ApiModel implements StreamsApiModelInterface {
             console.error(query);
             console.error(err);
             this.openSnackbar('HLS 配信開始に失敗しました');
+            throw err;
+        }
+    }
+
+    /**
+     * RTMP ライブ配信
+     * @param channelId: channel id
+     * @param mode: mode
+     * @return Promise<number> stream number
+     */
+    public async startLiveRTMP(channelId: apid.ServiceItemId, mode: number): Promise<number> {
+        try {
+            const stream: apid.RTMPStream = await <any> this.request({
+                method: 'GET',
+                url: `./api/streams/live/${ channelId }/rtmp`,
+                data: { mode: mode },
+            });
+
+            return stream.streamNumber;
+        } catch (err) {
+            console.error(`./api/live/${ channelId }/rtmp`);
+            console.error({ mode: mode });
+            console.error(err);
+            this.openSnackbar('RTMP 配信開始に失敗しました');
             throw err;
         }
     }
