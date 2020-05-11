@@ -112,7 +112,7 @@ class StreamsApiModel extends ApiModel implements StreamsApiModelInterface {
             const stream: apid.RTMPStream = await <any> this.request({
                 method: 'GET',
                 url: `./api/streams/live/${ channelId }/rtmp`,
-                data: { mode: mode },
+                params: { mode: mode },
             });
 
             return stream.streamNumber;

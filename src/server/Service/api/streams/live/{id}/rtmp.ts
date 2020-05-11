@@ -7,7 +7,7 @@ export const get: Operation = async(req, res) => {
     const streams = <StreamsModelInterface> factory.get('StreamsModel');
 
     try {
-        const info = await streams.getRTMPLive(req.params.id, req.query.mode);
+        const info = await streams.getRTMPLive(parseInt(req.params.id, 10), req.query.mode as any as number);
         const streamNumber = info.streamNumber;
         const streamKey = info.streamKey;
         api.responseJSON(res, 200, { streamNumber: streamNumber, streamKey: streamKey });
