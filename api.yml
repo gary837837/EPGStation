@@ -331,6 +331,18 @@ definitions:
             type: string
           win:
             type: string
+      RTMPViewer:
+        description: 'RTMP 視聴アプリ設定'
+        type: object
+        properties:
+          ios:
+            type: string
+          android:
+            type: string
+          mac:
+            type: string
+          win:
+            type: string
       liveWebM:
         type: array
         items:
@@ -1391,6 +1403,8 @@ definitions:
     properties:
       streamNumber:
         type: integer
+      streamKey:
+        type: string
 
   StreamInfo:
     type: object
@@ -1437,6 +1451,8 @@ definitions:
       description:
         type: string
       extended:
+        type: string
+      streamKey:
         type: string
 
   Error:

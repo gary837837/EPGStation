@@ -6,7 +6,7 @@ import ProcessUtil from '../../../Util/ProcessUtil';
 import Util from '../../../Util/Util';
 import { EncodeProcessManageModelInterface } from '../Encode/EncodeProcessManageModel';
 import { SocketIoManageModelInterface } from '../SocketIoManageModel';
-import { LiveStreamInfo, Stream } from './Stream';
+import { RTMPLiveStreamInfo, Stream } from './Stream';
 import { StreamManageModelInterface } from './StreamManageModel';
 
 /**
@@ -14,6 +14,7 @@ import { StreamManageModelInterface } from './StreamManageModel';
  */
 class RTMPLiveStream extends Stream {
     private channelId: apid.ServiceItemId;
+    private streamKey: string;
     private mode: number;
     private enc: ChildProcess | null = null;
     private stream: http.IncomingMessage | null = null;
@@ -33,6 +34,7 @@ class RTMPLiveStream extends Stream {
         super(process, socketIo, manager);
 
         this.channelId = channelId;
+        this.streamKey = Math.ceil(Math.random() * 4294967296).toString(16);
         this.mode = mode;
     }
 
@@ -49,7 +51,9 @@ class RTMPLiveStream extends Stream {
             // エンコードプロセス生成
             const config = this.config.getConfig().liveRTMP;
             if (typeof config === 'undefined' || typeof config[this.mode] === 'undefined') { throw new Error('RTMPLiveStreamConfigError'); }
-            const cmd = config[this.mode].cmd.replace('%FFMPEG%', Util.getFFmpegPath());
+            const rtmpURL = config[this.mode].url.replace('%ENC_NUM%', this.streamKey);
+            const cmd = config[this.mode].cmd.replace('%FFMPEG%', Util.getFFmpegPath())
+                                             .replace('%RTMP_URL%', rtmpURL);
 
             this.enc = await this.process.create('', '', cmd, Stream.priority);
 
@@ -57,7 +61,7 @@ class RTMPLiveStream extends Stream {
             if (this.enc.stdin !== null) {
                 this.stream.pipe(this.enc.stdin);
             }
-            
+
             this.enc.on('exit', () => { this.ChildExit(streamNumber); });
             this.enc.on('error', () => { this.ChildExit(streamNumber); });
 
@@ -83,15 +87,18 @@ class RTMPLiveStream extends Stream {
         await super.stop();
     }
 
-    public getInfo(): LiveStreamInfo {
+    public getInfo(): RTMPLiveStreamInfo {
         return {
             type: 'RTMPLive',
             channelId: this.channelId,
             mode: this.mode,
+            streamKey: this.streamKey,
         };
     }
 
-    public getEncChild(): ChildProcess | null { return this.enc; }
+    public getStreamKey(): string {
+        return this.streamKey;
+    }
 }
 
 export default RTMPLiveStream;

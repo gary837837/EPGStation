@@ -3,7 +3,7 @@ import * as apid from '../../../../../api';
 import Util from '../../../Util/Util';
 import Model from '../../Model';
 import { SocketIoManageModelInterface } from '../SocketIoManageModel';
-import { LiveStreamInfo, RecordedStreamInfo, Stream } from './Stream';
+import { LiveStreamInfo, RecordedStreamInfo, RTMPLiveStreamInfo, Stream } from './Stream';
 import StreamStatus from './StreamStatus';
 import * as enums from './StreamTypeInterface';
 
@@ -19,6 +19,10 @@ interface LiveStreamStatusInfo extends StreamBaseStatusInfo {
     channelId: apid.ServiceItemId;
 }
 
+interface RTMPLiveStreamStatusInfo extends LiveStreamStatusInfo {
+    streamKey: string;
+}
+
 interface RecordedStreamStatusInfo extends StreamBaseStatusInfo {
     recordedId: apid.RecordedId;
     encodedId?: apid.EncodedId;
@@ -27,7 +31,7 @@ interface RecordedStreamStatusInfo extends StreamBaseStatusInfo {
 /**
  * Stream 情報
  */
-type StreamStatusInfo = StreamBaseStatusInfo | LiveStreamStatusInfo | RecordedStreamStatusInfo;
+type StreamStatusInfo = StreamBaseStatusInfo | RTMPLiveStreamStatusInfo | LiveStreamStatusInfo | RecordedStreamStatusInfo;
 
 interface StreamManageModelInterface {
     getStreamInfo(num: number): StreamStatusInfo | null;
@@ -83,6 +87,9 @@ class StreamManageModel extends Model implements StreamManageModelInterface {
             if (typeof (<RecordedStreamStatusInfo> streamInfo).encodedId !== 'undefined') {
                 (<RecordedStreamStatusInfo> result).encodedId = (<RecordedStreamInfo> streamInfo).encodedId;
             }
+        }
+        if (streamInfo.type.includes('RTMPLive')) {
+            (<RTMPLiveStreamStatusInfo> result).streamKey = (<RTMPLiveStreamInfo> streamInfo).streamKey;
         }
 
         return <StreamStatusInfo> result;
@@ -261,5 +268,4 @@ class StreamManageModel extends Model implements StreamManageModelInterface {
     }
 }
 
-export { LiveStreamStatusInfo, RecordedStreamStatusInfo, StreamManageModelInterface, StreamManageModel };
-
+export { RTMPLiveStreamStatusInfo, LiveStreamStatusInfo, RecordedStreamStatusInfo, StreamManageModelInterface, StreamManageModel };

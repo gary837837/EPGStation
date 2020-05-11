@@ -10,7 +10,7 @@ import RecordedStreamingMpegTsStream from '../Service/Stream/RecordedStreamingMp
 import { ContainerType, RecordedStreamingMultiTypeStream } from '../Service/Stream/RecordedStreamingMultiTypeStream';
 import RTMPLiveStream from '../Service/Stream/RTMPLiveStream';
 import { Stream } from '../Service/Stream/Stream';
-import { LiveStreamStatusInfo, StreamManageModelInterface } from '../Service/Stream/StreamManageModel';
+import { LiveStreamStatusInfo, RTMPLiveStreamStatusInfo, StreamManageModelInterface } from '../Service/Stream/StreamManageModel';
 import WebMLiveStream from '../Service/Stream/WebMLiveStream';
 import ApiModel from './ApiModel';
 import ApiUtil from './ApiUtil';
@@ -18,6 +18,11 @@ import { PlayList } from './PlayListInterface';
 
 interface StreamModelInfo {
     stream: Stream;
+    streamNumber: number;
+}
+
+interface RTMPStreamModelInfo {
+    streamKey: string;
     streamNumber: number;
 }
 
@@ -29,7 +34,7 @@ namespace StreamsModelInterface {
 interface StreamsModelInterface extends ApiModel {
     getHLSLive(channelId: apid.ServiceItemId, mode: number): Promise<number>;
     getMP4Live(channelId: apid.ServiceItemId, mode: number): Promise<StreamModelInfo>;
-    getRTMPLive(channelId: apid.ServiceItemId, mode: number): Promise<number>;
+    getRTMPLive(channelId: apid.ServiceItemId, mode: number): Promise<RTMPStreamModelInfo>;
     getWebMLive(channelId: apid.ServiceItemId, mode: number): Promise<StreamModelInfo>;
     getLiveMpegTs(channelId: apid.ServiceItemId, mode: number): Promise<StreamModelInfo>;
     getRecordedHLS(recordedId: apid.RecordedId, mode: number, encodedId: apid.EncodedId | null): Promise<number>;
@@ -124,20 +129,22 @@ class StreamsModel extends ApiModel implements StreamsModelInterface {
      * RTMP ライブ視聴
      * @param channelId: channel id
      * @param mode: config.MpegTsStreaming の index 番号
-     * @return Promise<StreamModelInfo>
+     * @return Promise<RTMPStreamModelInfo>
      */
-    public async getRTMPLive(channelId: apid.ServiceItemId, mode: number): Promise<number> {
+    public async getRTMPLive(channelId: apid.ServiceItemId, mode: number): Promise<RTMPStreamModelInfo> {
         // 同じパラメータの stream がないか確認する
         const infos = this.streamManage.getStreamInfos();
         for (const info of infos) {
-            if (info.type === 'RTMPLive' && (<LiveStreamStatusInfo> info).channelId === channelId && info.mode === mode) {
-                return info.streamNumber;
+            if (info.type === 'RTMPLive' && (<RTMPLiveStreamStatusInfo> info).channelId === channelId && info.mode === mode) {
+                return { streamKey: (<RTMPLiveStreamStatusInfo> info).streamKey, streamNumber: info.streamNumber };
             }
         }
 
         const stream = this.createRTMPLiveStream(channelId, mode);
+        const streamNumber = await this.streamManage.start(stream);
+        const streamKey = stream.getStreamKey();
 
-        return await this.streamManage.start(stream);
+        return { streamKey: streamKey, streamNumber: streamNumber };
     }
 
     /**

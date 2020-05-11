@@ -68,6 +68,12 @@ export interface Config {
         mac: string;
         win: string;
     };
+    RTMPViewer?: {
+        ios: string;
+        android: string;
+        mac: string;
+        win: string;
+    };
     liveWebM?: string[];
     liveMP4?: string[];
     liveRTMP?: string[];
@@ -445,6 +451,7 @@ interface HLSStream {
 
 interface RTMPStream {
     streamNumber: number;
+    streamKey: string;
 }
 
 interface StreamInfo {
@@ -463,5 +470,6 @@ interface StreamInfo {
     channelType?: ChannelType;
     description?: string;
     extended?: string;
+    streamKey?: string;
 }
 

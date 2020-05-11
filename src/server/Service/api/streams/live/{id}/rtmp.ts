@@ -7,9 +7,10 @@ export const get: Operation = async(req, res) => {
     const streams = <StreamsModelInterface> factory.get('StreamsModel');
 
     try {
-        const streamNumber = await streams.getRTMPLive(req.params.id, req.query.mode);
-
-        api.responseJSON(res, 200, { streamNumber: streamNumber });
+        const info = await streams.getRTMPLive(req.params.id, req.query.mode);
+        const streamNumber = info.streamNumber;
+        const streamKey = info.streamKey;
+        api.responseJSON(res, 200, { streamNumber: streamNumber, streamKey: streamKey });
     } catch (err) {
         api.responseServerError(res, err.message);
     }

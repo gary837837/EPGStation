@@ -132,6 +132,8 @@ class StreamInfoViewModel extends ViewModel {
             if (Number(m.route.param('stream')) === info.streamNumber) { return; }
 
             window.setTimeout(() => { Util.move('/stream/watch', { stream: info.streamNumber }); }, 200);
+        } else if (info.type === 'RTMPLive') {
+            window.setTimeout(() => { Util.move('/stream/watchRTMP', { stream: info.streamNumber }); }, 200);
         }
     }
 }

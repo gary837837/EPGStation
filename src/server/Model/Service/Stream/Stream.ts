@@ -21,6 +21,10 @@ interface LiveStreamInfo extends StreamInfo {
     channelId: apid.ServiceItemId;
 }
 
+interface RTMPLiveStreamInfo extends LiveStreamInfo {
+    streamKey: string;
+}
+
 abstract class Stream extends Base {
     protected process: EncodeProcessManageModelInterface;
     private socketIo: SocketIoManageModelInterface;
@@ -101,5 +105,4 @@ namespace Stream {
 }
 
 
-export { RecordedStreamInfo, LiveStreamInfo, Stream };
-
+export { RecordedStreamInfo, LiveStreamInfo, RTMPLiveStreamInfo, Stream };

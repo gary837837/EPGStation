@@ -12,6 +12,7 @@ import SearchComponent from './Component/Search/SearchComponent';
 import SettingComponent from './Component/Setting/SettingComponent';
 import StreamProgramComponent from './Component/Stream/StreamProgramComponent';
 import StreamWatchComponent from './Component/Stream/StreamWatchComponent';
+import StreamWatchRTMPComponent from './Component/Stream/StreamWatchRTMPComponent';
 import TopPageComponent from './Component/TopPage/TopPageComponent';
 import VideoWatchComponent from './Component/VideoWatch/VideoWatchComponent';
 import Util from './Util/Util';
@@ -32,6 +33,7 @@ m.route(document.body, '/', {
     '/': TopPageComponent,
     '/stream/program': StreamProgramComponent,
     '/stream/watch': StreamWatchComponent,
+    '/stream/watchRTMP': StreamWatchRTMPComponent,
     '/program': ProgramComponent,
     '/program/detail/:programId': ProgramDetailComponent,
     '/program/setting': ProgramSettingComponent,

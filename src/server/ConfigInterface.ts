@@ -152,6 +152,12 @@ interface ConfigInterface {
         mac: string;
         win: string;
     };
+    RTMPViewer: {
+        ios: string;
+        android: string;
+        mac: string;
+        win: string;
+    };
     liveWebM: {
         name: string;
         cmd: string;
@@ -162,6 +168,7 @@ interface ConfigInterface {
     }[];
     liveRTMP: {
         name: string;
+        url: string;
         cmd: string;
     }[];
     kodiHosts: {
