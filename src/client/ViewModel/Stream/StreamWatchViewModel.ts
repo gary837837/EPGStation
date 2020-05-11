@@ -85,7 +85,7 @@ class StreamWatchViewModel extends ViewModel {
         let baseURL = setting.customHLSViewerURLScheme;
 
         if (baseURL === null && typeof config.HLSViewer !== 'undefined') {
-            if (Util.uaIsiOS() && typeof config.HLSViewer.ios !== 'undefined') {
+            if ((Util.uaIsiOS() || Util.uaIsiPadOS()) && typeof config.HLSViewer.ios !== 'undefined') {
                 baseURL = config.HLSViewer.ios;
             } else if (Util.uaIsAndroid() && typeof config.HLSViewer.android !== 'undefined') {
                 baseURL = config.HLSViewer.android;
@@ -191,6 +191,14 @@ class StreamWatchViewModel extends ViewModel {
             render.hide();
             this.subtitleSetting.setValue({ isEnabledSubtitle: false });
         }
+    }
+
+    /**
+     * ブラウザ内蔵のプレーヤを使用するか
+     * @return true: 内蔵のプレーヤを使用する
+     */
+    public isNativePlayer(): boolean {
+        return this.setting.getValue().isEnableNativeHLSVideoPlayer;
     }
 }
 

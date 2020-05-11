@@ -22,6 +22,7 @@ class RulesSearchComponent extends Component<void> {
         return m('div', [
             m('div', { class: 'rules-search' }, [
                 this.createSearchTextFiled(), // 検索テキストフィールド
+                this.createEnableOnlyToggle(), // 有効ルールのみ表示トグル
             ]),
         ]);
     }
@@ -37,9 +38,9 @@ class RulesSearchComponent extends Component<void> {
                 type: 'text',
                 placeholder: 'keyword',
                 value: this.viewModel.keyword,
-                onchange: m.withAttr('value', (value) => {
-                    this.viewModel.keyword = value;
-                }),
+                onchange: (e: Event) => {
+                    this.viewModel.keyword = (<HTMLInputElement> e.target!).value;
+                },
                 oncreate: (vnode: m.VnodeDOM<void, this>) => {
                     // enter key で検索
                     (<HTMLInputElement> vnode.dom).onkeydown = (e) => {
@@ -51,6 +52,22 @@ class RulesSearchComponent extends Component<void> {
                     };
                 },
             }),
+        ]);
+    }
+
+    /**
+     * 有効ルールのみ表示トグル
+     * @return m.Child
+     */
+    private createEnableOnlyToggle(): m.Child {
+        return m('label', { class: 'option-checkbox mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect' }, [
+            m('input', {
+                type: 'checkbox',
+                class: 'mdl-checkbox__input',
+                checked: this.viewModel.enableonly,
+                onclick: (e: Event) => { this.viewModel.enableonly = (<HTMLInputElement> e.target!).checked; },
+            }),
+            m('span', { class: 'mdl-checkbox__label' }, '有効ルールのみ表示'),
         ]);
     }
 }

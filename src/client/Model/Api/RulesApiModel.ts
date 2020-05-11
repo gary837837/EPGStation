@@ -3,6 +3,7 @@ import ApiModel from './ApiModel';
 
 interface RuleFindQueryOption {
     keyword?: string;
+    enableonly?: boolean;
 }
 
 interface RulesApiModelInterface extends ApiModel {
@@ -66,12 +67,13 @@ class RulesApiModel extends ApiModel implements RulesApiModelInterface {
         };
 
         if (typeof option.keyword !== 'undefined') { query.keyword = option.keyword; }
+        if (typeof option.enableonly !== 'undefined') { query.enableonly = option.enableonly; }
 
         try {
             this.rules = await <any> this.request({
                 method: 'GET',
                 url: './api/rules',
-                data: query,
+                params: query,
             });
 
             this.currentPage = this.offset / this.limit + 1;
@@ -202,7 +204,7 @@ class RulesApiModel extends ApiModel implements RulesApiModelInterface {
         await <apid.RecordedDeleteMultipleResult> await this.request({
             method: 'POST',
             url: './api/rules/delete',
-            data: {
+            body: {
                 ruleIds: ruleIds,
                 delete: isDeleteRecorded,
             },
@@ -219,7 +221,7 @@ class RulesApiModel extends ApiModel implements RulesApiModelInterface {
         await this.request({
             method: 'POST',
             url: './api/rules',
-            data: rule,
+            body: rule,
         });
     }
 
@@ -233,7 +235,7 @@ class RulesApiModel extends ApiModel implements RulesApiModelInterface {
         await this.request({
             method: 'PUT',
             url: `./api/rules/${ ruleId }`,
-            data: rule,
+            body: rule,
         });
     }
 }

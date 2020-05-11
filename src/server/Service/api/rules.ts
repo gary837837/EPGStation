@@ -7,9 +7,14 @@ export const get: Operation = async(req, res) => {
     const rules = <RulesModelInterface> factory.get('RulesModel');
 
     try {
-        const results = await rules.getAll(req.query.limit, req.query.offset, {
-            keyword: req.query.keyword,
-        });
+        const results = await rules.getAll(
+            req.query.limit as any as number,
+            req.query.offset as any as number,
+            {
+                keyword: req.query.keyword as string,
+                enableonly: req.query.enableonly as any as boolean,
+            },
+        );
         api.responseJSON(res, 200, results);
     } catch (err) {
         api.responseServerError(res, err.message);
@@ -24,6 +29,7 @@ get.apiDoc = {
         { $ref: '#/parameters/limit' },
         { $ref: '#/parameters/offset' },
         { $ref: '#/parameters/ruleKeyword' },
+        { $ref: '#/parameters/enableonly' },
     ],
     responses: {
         200: {

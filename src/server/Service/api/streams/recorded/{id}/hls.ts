@@ -8,9 +8,9 @@ export const get: Operation = async(req, res) => {
 
     try {
         const streamNumber = await streams.getRecordedHLS(
-            req.params.id,
-            req.query.mode,
-            typeof req.query.encodedId === 'undefined' ? null : req.query.encodedId,
+            parseInt(req.params.id, 10),
+            req.query.mode as any as number,
+            typeof req.query.encodedId === 'undefined' ? null : req.query.encodedId as any as number,
         );
 
         api.responseJSON(res, 200, { streamNumber: streamNumber });

@@ -16,35 +16,43 @@ import StreamWatchRTMPComponent from './Component/Stream/StreamWatchRTMPComponen
 import TopPageComponent from './Component/TopPage/TopPageComponent';
 import VideoWatchComponent from './Component/VideoWatch/VideoWatchComponent';
 import Util from './Util/Util';
+import MainViewModel from './ViewModel/MainViewModel';
+import factory from './ViewModel/ViewModelFactory';
 import ViewModelFactorySetting from './ViewModel/ViewModelFactorySetting';
 
 ViewModelFactorySetting.init();
 
-// android では web アプリ化
-if (Util.uaIsAndroid()) {
-    const meta = document.createElement('meta');
-    meta.setAttribute('name', 'mobile-web-app-capable');
-    meta.setAttribute('content', 'yes');
-    document.getElementsByTagName('head')[0].appendChild(meta);
-}
+(async() => {
+    // server から config 情報を取得
+    const configApiModel = <MainViewModel> factory.get('MainViewModel');
+    await configApiModel.updateConfig();
 
-m.route.prefix('#!');
-m.route(document.body, '/', {
-    '/': TopPageComponent,
-    '/stream/program': StreamProgramComponent,
-    '/stream/watch': StreamWatchComponent,
-    '/stream/watchRTMP': StreamWatchRTMPComponent,
-    '/program': ProgramComponent,
-    '/program/detail/:programId': ProgramDetailComponent,
-    '/program/setting': ProgramSettingComponent,
-    '/recorded': RecordedComponent,
-    '/recorded/:recordedId/watch': RecordedWatchComponent,
-    '/recorded/upload': RecordedUploadComponent,
-    '/encoding': EncodingComponent,
-    '/reserves': ReservesComponent,
-    '/rules': RulesComponent,
-    '/search': SearchComponent,
-    '/setting': SettingComponent,
-    '/video/watch': VideoWatchComponent,
-});
+    // android では web アプリ化
+    if (Util.uaIsAndroid()) {
+        const meta = document.createElement('meta');
+        meta.setAttribute('name', 'mobile-web-app-capable');
+        meta.setAttribute('content', 'yes');
+        document.getElementsByTagName('head')[0].appendChild(meta);
+    }
+
+    m.route.prefix = '#!';
+    m.route(document.body, '/', {
+        '/': TopPageComponent,
+        '/stream/program': StreamProgramComponent,
+        '/stream/watch': StreamWatchComponent,
+        '/stream/watchRTMP': StreamWatchRTMPComponent,
+        '/program': ProgramComponent,
+        '/program/detail/:programId': ProgramDetailComponent,
+        '/program/setting': ProgramSettingComponent,
+        '/recorded': RecordedComponent,
+        '/recorded/:recordedId/watch': RecordedWatchComponent,
+        '/recorded/upload': RecordedUploadComponent,
+        '/encoding': EncodingComponent,
+        '/reserves': ReservesComponent,
+        '/rules': RulesComponent,
+        '/search': SearchComponent,
+        '/setting': SettingComponent,
+        '/video/watch': VideoWatchComponent,
+    });
+})();
 
