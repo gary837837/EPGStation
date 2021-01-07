@@ -74,6 +74,7 @@ class RecordingStreamCreator extends Model implements RecordingStreamCreatorInte
                 if (tuner.programs[i].reserve.program.id === programId) {
                     if (tuner.programs[i].stream !== null) {
                         tuner.programs[i].stream!.destroy();
+                        tuner.programs[i].stream!.push(null); // eof 通知
                     }
                     tuner.programs.splice(i, 1);
 
@@ -183,7 +184,7 @@ class RecordingStreamCreator extends Model implements RecordingStreamCreatorInte
                 const mirakurun = CreateMirakurunClient.get();
                 for (const p of this.tuners[i].programs) {
                     // 時刻指定予約はスキップ
-                    if (!!(<ManualReserveProgram> p.reserve).isTimeSpecifited) { continue; }
+                    if (!!(<ManualReserveProgram> p.reserve).isTimeSpecified) { continue; }
 
                     try {
                         const newProgram = await mirakurun.getProgram(p.reserve.program.id);
@@ -204,6 +205,7 @@ class RecordingStreamCreator extends Model implements RecordingStreamCreatorInte
                 for (const p of this.tuners[i].programs) {
                     if (p.stream !== null) {
                         p.stream.destroy();
+                        p.stream.push(null); // eof 通知
                     }
                 }
 
@@ -263,6 +265,7 @@ class RecordingStreamCreator extends Model implements RecordingStreamCreatorInte
         const endTimer = setTimeout(() => {
             if (channelStream !== null) {
                 channelStream.destroy();
+                channelStream.push(null); // eof 通知
             }
         }, reserve.program.endAt - now + (1000 * endMargin));
 

@@ -1,5 +1,6 @@
 import { ChildProcess } from 'child_process';
 import * as fs from 'fs';
+import Util from './Util';
 
 namespace ProcessUtil {
     /**
@@ -43,14 +44,14 @@ namespace ProcessUtil {
      * @return ProcessUtil.Cmds
      */
     export const parseCmdStr = (cmd: string): ProcessUtil.Cmds => {
-        const args = cmd.split(' ');
+        let args = cmd.split(' ');
         let bin = args.shift();
         if (typeof bin === 'undefined') {
             throw new Error('CmdParseError');
         }
 
         // %NODE% の replace
-        bin = bin.replace(/%NODE%/g, process.argv[0]);
+        bin = bin.replace(/%NODE%/g, process.argv[0]).replace(/%FFMPEG%/g, Util.getFFmpegPath());
 
         // bin の存在確認
         try {
@@ -58,6 +59,11 @@ namespace ProcessUtil {
         } catch (e) {
             throw new Error('CmdBinIsNotFound');
         }
+
+        // 引数内の %SPACE% を半角スペースに置換
+        args = args.map(arg => {
+            return arg.replace(/%SPACE%/g, ' ');
+        });
 
         return {
             bin: bin,
